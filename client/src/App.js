@@ -18,37 +18,28 @@ const styles = theme=>({
   table:{
     minWidth: 1080
   }
-})
-
-
-const customers=[
-  {
-  'id': 1,
-  'image': 'http://placeimg.com/64/64/1',
-  'name' : '이우도',
-  'birthday' : '931213',
-  'gender' : '남자',
-  'job' : '개발자'
-},
-{
-  'id': 2,
-  'image': 'http://placeimg.com/64/64/2',
-  'name' : '이우도(2)',
-  'birthday' : '123456',
-  'gender' : '여자',
-  'job' : '회장'
-},
-{
-  'id': 3,
-  'image': 'http://placeimg.com/64/64/3',
-  'name' : '이우도(3)',
-  'birthday' : '789012',
-  'gender' : '강아지',
-  'job' : '고수'
-},
-]
+});
 
 class App extends React.Component{
+  state ={
+    customers: ""
+  }
+
+  componentDidMount(){
+    // 모든 컴포넌트가 mount된 후 에 실행됨
+    this.callApi()
+      .then(res => this.setState({customers:res}))
+      .catch(err => console.log(err)); // catch--만약 에러가 발생할때 콘솔찍기
+
+  }
+  callApi = async() =>{
+    // response로 해당 설정된 경로로 접근
+    // 해당 경로에 저장된 데이터를 json파일로 읽어와서 리턴시킨다.
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render(){
     const { classes }= this.props;
     return(
@@ -64,7 +55,7 @@ class App extends React.Component{
           </TableHead>
           <TableBody>
             {
-              customers.map(c=>{
+             this.state.customers ? this.state.customers.map(c=>{
                 return(
                   <Customer 
                   key={c.id}
@@ -76,7 +67,7 @@ class App extends React.Component{
                   job={c.job}
                   />   
                 );
-              })
+              }) : ""
             }
           </TableBody>
 
