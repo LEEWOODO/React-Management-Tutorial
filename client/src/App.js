@@ -7,7 +7,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {withStyles} from '@material-ui/core/styles';
+
 
 const styles = theme=>({
   root:{
@@ -17,15 +19,43 @@ const styles = theme=>({
   },
   table:{
     minWidth: 1080
+  },
+  progress:{
+    margin: theme.spacing.unit*2
+    // 방법2: margin: theme.spacing(2)
   }
 });
 
+/*
+
+리액트 컴포넌트 라이프사이클
+
+1) constructor()
+
+2) componentWillMount()
+
+3) render()
+
+4) componentDidMount()
+
+*/
+
+/*
+
+props or state 상태가 변경되는 경우 => shouldComponentUpdate() 실행됨
+ 
+*/
+
+
 class App extends React.Component{
   state ={
-    customers: ""
+    customers: "",
+    completed: 0
   }
 
   componentDidMount(){
+    this.timer= setInterval(this.progress, 20);
+
     // 모든 컴포넌트가 mount된 후 에 실행됨
     this.callApi()
       .then(res => this.setState({customers:res}))
@@ -38,6 +68,11 @@ class App extends React.Component{
     const response = await fetch('/api/customers'); // 접속하고자 하는 API주소
     const body = await response.json();// json형태로 가져온 것을 body변수에 저장
     return body;
+  }
+
+  progress= () =>{
+    const { completed }= this.state;
+    this.setState({completed: completed>=100? 0 : completed+1});
   }
 
   render(){
@@ -67,7 +102,12 @@ class App extends React.Component{
                   job={c.job}
                   />   
                 );
-              }) : ""
+              }) : 
+              <TableRow>
+                <TableCell colSpan="6" align="center">
+                  <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed}></CircularProgress>
+                </TableCell>
+              </TableRow>
             }
           </TableBody>
 
