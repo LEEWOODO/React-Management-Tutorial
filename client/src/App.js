@@ -36,7 +36,7 @@ class App extends React.Component{
     // response로 해당 설정된 경로로 접근
     // 해당 경로에 저장된 데이터를 json파일로 읽어와서 리턴시킨다.
     const response = await fetch('/api/customers'); // 접속하고자 하는 API주소
-    const body = await response.json();
+    const body = await response.json();// json형태로 가져온 것을 body변수에 저장
     return body;
   }
 
